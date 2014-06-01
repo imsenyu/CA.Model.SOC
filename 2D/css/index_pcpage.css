@@ -1,0 +1,86 @@
+html,body{
+height:100%;
+position:relative;
+}
+
+#wrap{
+margin:0 auto;
+width:auto;
+background-color:rgba(250,250,250,0.5);
+padding-top:50px;
+}
+
+.ca_container{
+width:auto;
+height:auto;
+padding:10px 0;
+background-color:#f7f7f7;
+margin:0 auto;
+}
+.ca_tools{
+width:100%;
+margin:0 auto;
+background-color:#eee;
+text-align:center;
+}
+.ca_container ul{display:block;font-size:0;text-align:center;}
+.ca_container li{
+height:30px;
+width:30px;
+display:inline-block;*zoom:1;*display:inline;
+margin:0px;
+position:relative;
+font-size:0; 
+}
+.ca_container li div{
+width:70%;
+height:70%;
+background-color:#ccc;
+margin:0 auto;
+position: absolute; top: 50%;left:50%;  margin: -35%;
+/* transition:all 0.1s; */
+color:#333;
+font-size:10px;
+
+
+}
+.ca_container li div.act,.ca_container li div.act.loop{
+background-color:#000!important;
+color:#FFF!important;
+border:1px solid yellow;
+}
+.ca_container li div.curloop{
+border:1px solid #241781;
+}
+
+.ca_container li div.c0{background-color:rgb(255,255,255);color:rgb(0,0,0);}
+.ca_container li div.c1{background-color:rgb(225,225,225);color:rgb(0,0,0);}
+.ca_container li div.c2{background-color:rgb(195,195,195);color:rgb(0,0,0);}
+.ca_container li div.c3{background-color:rgb(165,165,165);color:rgb(255,255,255);}
+.ca_container li div.c4{background-color:rgb(135,135,135);color:rgb(255,255,255);}
+.ca_container li div.c5{background-color:rgb(105,105,105);color:rgb(255,255,255);}
+.ca_container li div.c6{background-color:rgb(105,105,105);color:rgb(255,255,255);}
+
+
+.ca_container li div.c0.loop{background-color:#ffd280!important;}
+.ca_container li div.c1.loop{background-color:#ffc966!important;}
+.ca_container li div.c2.loop{background-color:#ffc14c!important;}
+.ca_container li div.c3.loop{background-color:#ffb833!important;}
+.ca_container li div.c4.loop{background-color:#ffaf1a!important;}
+.ca_container li div.c5.loop{background-color:#ffa500!important;}
+.ca_container li div.c6.loop{background-color:#ffa500!important;}
+.ca_container li div.loop{background-color:#ffaf1a;}
+
+.ca_container li div.act.loop.c0,.ca_container li div.act.loop.c1,.ca_container li div.act.loop.c2,.ca_container li div.act.loop.c3,.ca_container li div.act.loop.c4,.ca_container li div.act.loop.c5,.ca_container li div.act.loop.c6{
+background-color:#000!important;
+color:#FFF!important;
+border:1px solid yellow;
+}
+.ca_container li div span{
+width:100%;
+height:100%;
+line-height:100%;
+display:inline-block;
+font-size:10px;
+text-align:center;
+}

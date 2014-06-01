@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<title>CA Model - 2D</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" type="text/css" href="./css/base.css">
+	<link rel="stylesheet" type="text/css" href="./css/index_pcpage.css">
+	<script type="text/javascript" src="./js/jquery/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="./js/main.js" ></script>
+</head>
+<body class="zh_CN">
+	<div id="wrap">
+		
+		<div class="ca_container">
+		</div>
+		<div class="ca_tools">
+			<input type="button" id="run-check" value="Start" data-state="0"/>
+			<input type="button" id="run-next" value="Next" data-state="0" style="margin-right:30px;"/>
+			<input type="button" id="set-val-1" value="SetTo 1"/>
+			<input type="button" id="set-val-2" value="SetTo 2"/>
+			<input type="button" id="set-val-3" value="SetTo 3"/>
+			<input type="button" id="set-val-4" value="SetTo 4"/>
+			<input type="button" id="set-val-rnd" value="SetTo Random"/>
+			Step：<span id="times"></span>
+			Circle：<span id="circle"></span>
+		</div>
+		<div class="ca_tools">
+			
+		</div>
+	</div>
+	<script id="temp_line" type="text/x-jsrender"  ><!--
+	<ul id="line-{0}" data-id="{0}">{1}</ul>
+	--></script>
+	<script id="temp_item" type="text/x-jsrender"  ><!--
+	<li id="cell-{0}" data-id="{0}" data-line="{1}"><div><span>{2}</span></div></li>
+	--></script>	
+</body></html>
