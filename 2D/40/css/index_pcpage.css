@@ -7,13 +7,13 @@ position:relative;
 margin:0 auto;
 width:auto;
 background-color:rgba(250,250,250,0.5);
-padding-top:50px;
+padding-top:0;
 }
 
 .ca_container{
 width:auto;
 height:auto;
-padding:10px 0;
+padding:0 0;
 background-color:#f7f7f7;
 margin:0 auto;
 }
