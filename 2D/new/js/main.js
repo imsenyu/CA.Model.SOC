@@ -197,14 +197,7 @@
                     //container.find("div").css("background-color", "#ccc");
                     setM(r.x, r.y, getM(r.x, r.y)+1);
                     cur.addClass("act");
-                    
-                    if( getM(r.x, r.y) >= op.threshold )
-                    {
-                        cnt_loop = 0;
-                        isLoop = false;
-                        loop(); 
-                    }
-                    else{isLock = false; }
+                    isLock = false;
                 }();
             }, 
             pause: function () {
