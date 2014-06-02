@@ -1,1 +1,253 @@
-(function(a,b,c){String.prototype.format=function(){var d=arguments;return this.replace(/\{(\d+)\}/g,function(e,f){return d[f]})};b.extend({CA:function(r){var l={speed:500,stepspeed:500,target:".ca_container",size:{x:10,y:7},threshold:5,template:{line:"#temp_line",item:"#temp_item"},isClose:true,noHoldExt:false,noColor:false},n,i,v=[],q=[],g,s,z=0,p=0,y=false,j=false,x=false,m=false;l=b.extend({},l,r);function e(C){var A=[],B,o=C.length;for(B=0;B<o;B+=1){if(C[B] instanceof Array){A[B]=e(C[B])}else{A[B]=C[B]}}return A}function f(o,A){return parseInt(Math.random()*(o-A+1)+A,10)}function k(o){var A={},C,B;for(B in o){C=b(o[B]).html();A[B]=C.substring(6,C.length-3)}return A}function d(o,A){return v[o][A]}function h(o,A){return i.eq(A*l.size.x+o)}function u(A,D,C,o){v[A][D]=C;var B=i.eq(D*l.size.x+A);B.find("span").text(C);if(!l.noColor&&!o){t(B,c,C)}}function t(B,A,D){if(A===c){if(B.hasClass("act")){B.attr("class","act c"+D)}else{B.attr("class","c"+D)}}else{var C=h(B,A);if(C.hasClass("act")){C.attr("class","act c"+D)}else{C.attr("class","c"+D)}}}function w(){if(x){return}x=true;var A=0;b("#circle").text(++p);q=e(v);if(!l.noColor&&l.noHoldExt){i.removeClass("loop")}if(!l.noColor){i.removeClass("curloop")}else{i.attr("class","")}for(var B=0;B<l.size.x;B++){for(var o=0;o<l.size.y;o++){if(d(B,o)<l.threshold){continue}if(B>0){q[B-1][o]+=1,q[B][o]-=1}if(o>0){q[B][o-1]+=1,q[B][o]-=1}if(B<l.size.x-1){q[B+1][o]+=1,q[B][o]-=1}if(o<l.size.y-1){q[B][o+1]+=1,q[B][o]-=1}}}for(var B=0;B<l.size.x;B++){for(var o=0;o<l.size.y;o++){if(q[B][o]!=d(B,o)){u(B,o,q[B][o]);if(!l.noColor){h(B,o).addClass("loop").addClass("curloop")}else{h(B,o).attr("class","loop")}}A+=(d(B,o)>=l.threshold)}}if(A===0){y=false;clearInterval(s)}x=false}return{init:function(C){l=b.extend({},l,C);n=b(l.target);v=[];for(var B=0;B<l.size.x;B++){v.push(new Array(l.size.y));for(var A=0;A<l.size.y;A++){v[B][A]=0}}this.build()},build:function(){var C="",o=k(l.template),D="";for(var A=0;A<l.size.y;A++){D="";for(var B=0;B<l.size.x;B++){D+=o.item.format(B,A,0)}C+=o.line.format(A,D)}n.append(C);i=n.find("li div")},start:function(){if(m){return}if(j){return}m=true;j=true;void function(){y=true;x=false;p=0;s=setInterval(w,l.speed)}();g=setInterval(function(){if(y){return}b("#times").text(z++);if(!l.noColor){i.removeClass("act")}else{i.attr("class","")}if(!l.noColor&&!l.noHoldExt){i.removeClass("loop").removeClass("curloop")}var o={x:0,y:0},A;o.x=f(-1,l.size.x);o.y=f(-1,l.size.y);A=h(o.x,o.y);u(o.x,o.y,d(o.x,o.y)+1);A.addClass("act");if(d(o.x,o.y)>=l.threshold){y=true;p=0;x=false;s=setInterval(w,l.speed)}else{y=false}j=false;if(p>1){console.log("step: "+z+";circle: "+p+";")}},l.stepspeed)},nextStep:function(){this.pause();y=true;void function(){x=false;w()}();void function(){if(y){return}b("#times").text(z++);if(!l.noColor){i.removeClass("act")}else{i.attr("class","")}if(!l.noColor&&!l.noHoldExt){i.removeClass("loop").removeClass("curloop")}var o={x:0,y:0},A;o.x=f(-1,l.size.x);o.y=f(-1,l.size.y);A=h(o.x,o.y);u(o.x,o.y,d(o.x,o.y)+1);A.addClass("act");y=false}()},pause:function(){m=false;y=false;x=false;j=false;clearInterval(g);clearInterval(s)},setV:function(C){var B;if(m){B=true;m=false}for(var A=0;A<l.size.x;A++){for(var o=0;o<l.size.y;o++){u(A,o,C)}}if(B){m=true}},setRandom:function(){var B;if(m){B=true;m=false}for(var A=0;A<l.size.x;A++){for(var o=0;o<l.size.y;o++){u(A,o,f(-1,5))}}if(B){m=true}},run_state:function(){return m}}}})})(window,jQuery);(function(a,b,c){b(document).ready(function(){var d=b.CA();d.init({speed:10,stepspeed:10,size:{x:20,y:20},isClose:true,noHoldExt:false,noColor:false});b("#run-check").on("click",function(){if(d.run_state()===false){d.start(),b(this).val("Stop")}else{d.pause(),b(this).val("Start")}});b("#run-next").on("click",function(){d.nextStep(),b("#run-check").val("Start")});b("#set-val-4").on("click",function(){d.setV(4)});b("#set-val-3").on("click",function(){d.setV(3)});b("#set-val-2").on("click",function(){d.setV(2)});b("#set-val-1").on("click",function(){d.setV(1)});b("#set-val-rnd").on("click",function(){d.setRandom()})})})(window,jQuery);
+(function (window, $, undefined) {
+    'use strict';
+    String.prototype.format = function () {var args = arguments; return this.replace(/\{(\d+)\}/g, function (m, i) {return args[i]; }); };
+    $.extend({CA: function (o) {
+        var op = {
+                speed: 500,
+                stepspeed: 500,
+                target: ".ca_container",
+                size: {x: 10, y: 7},
+                threshold: 5,
+                template: {line: "#temp_line", item: "#temp_item"},
+                isClose: true,
+                noHoldExt: false,
+                noColor: false
+            },
+            container,
+            ALL,
+            mat = [],
+            next = [],
+            t_step,
+            t_loop,
+            cnt_step = 0,
+            cnt_loop = 0,
+            isLock = false,
+            isStep = false,
+            isLoop = false,
+            run_state = false;
+        op = $.extend({}, op, o);
+        function deepcopy(obj) {
+            var out = [], i, len = obj.length;
+            for (i = 0; i < len; i += 1) {
+                if (obj[i] instanceof Array) {
+                    out[i] = deepcopy(obj[i]);
+                } else {
+                    out[i] = obj[i];
+                }
+            }
+            return out;
+        }
+        function randnum(x, y) {
+            return parseInt(Math.random() * (x - y + 1) + y, 10);
+        }
+        function getTemp(temp) {
+            var ret = {}, thtml, t;
+            for (t in temp) {
+                thtml = $(temp[t]).html();
+                ret[t] = thtml.substring(6, thtml.length - 3);
+            }
+            return ret;
+        }
+        function getM(x, y) {
+            return mat[x][y];
+        }
+        function getNode(x, y) {
+            return ALL.eq(y * op.size.x + x);
+        }
+        function setM(x, y, val, b) {
+            mat[x][y] = val;
+            var obj = ALL.eq(y * op.size.x + x);
+            obj.find("span").text(val);
+            if(!op.noColor && !b)transition(obj, undefined, val);
+        }
+        function transition(obj, obj2, val) {
+            if(obj2 === undefined) {
+                if(obj.hasClass("act"))
+                    obj.attr("class", "act c"+val);
+                else obj.attr("class", "c"+val);
+            }else{
+                var o = getNode(obj, obj2);
+                if(o.hasClass("act"))
+                    o.attr("class", "act c"+val);
+                else o.attr("class", "c"+val);
+            }
+        }
+        function loop() {
+            if(isLoop)return;
+            isLoop = true;
+            var  ret = 0;
+            $("#circle").text(++cnt_loop);
+            next = deepcopy(mat);
+            if(!op.noColor && op.noHoldExt)ALL.removeClass("loop");
+            if(!op.noColor)ALL.removeClass("curloop");
+            else ALL.attr("class", "");
+            for(var i = 0;i<op.size.x;i++) {
+                for(var j = 0;j<op.size.y;j++) {
+                    if(getM(i, j)<op.threshold)continue;
+                    if(i>0)
+                        next[i-1][j] += 1 , next[i][j] -= 1;
+                    if(j>0)
+                        next[i][j-1] += 1 , next[i][j] -= 1;
+                    if(i<op.size.x-1)
+                        next[i+1][j] += 1 , next[i][j] -= 1;
+                    if(j<op.size.y-1)
+                        next[i][j+1] += 1 , next[i][j] -= 1;
+                }
+            }
+
+            for(var i = 0;i<op.size.x;i++) {
+                for(var j = 0;j<op.size.y;j++) {
+                    if( next[i][j] != getM(i, j) ) {
+                        setM(i, j, next[i][j]);
+                        if(!op.noColor)getNode(i, j).addClass("loop").addClass("curloop");
+                        else getNode(i, j).attr("class", "loop");
+                    }
+                    ret += (getM(i, j)>= op.threshold);
+                }
+            }    
+
+            if(ret === 0) {
+                isLock = false;
+                clearInterval(t_loop);
+            }
+            isLoop = false;
+        }
+        return {
+            init: function (o) {
+                op = $.extend({}, op, o);
+                container = $(op.target);
+                mat = [];
+                for(var i = 0;i<op.size.x;i++) {
+                    mat.push(new Array(op.size.y));
+                    for(var j = 0;j<op.size.y;j++)
+                        mat[i][j] = 0;
+                }    
+                this.build();
+            }, 
+            build: function () {
+                var html = '', temp = getTemp(op.template), thtml = '';
+                for(var j = 0;j<op.size.y;j++) {
+                    thtml = '';
+                    for(var i = 0;i<op.size.x;i++)
+                        thtml += temp.item.format(i, j, 0);
+                    html += temp.line.format(j, thtml);
+                }
+                container.append(html);
+                ALL = container.find("li div");
+            }, 
+            start: function () {
+                if(run_state) {return; }
+                if(isStep) {return; }
+                run_state = true;
+                isStep = true;
+                
+                void function () {
+                    isLock = true;
+                    isLoop = false;
+                    cnt_loop = 0;
+                    t_loop = setInterval(loop, op.speed);
+                }();
+                
+                t_step = setInterval(function () {
+                    if(isLock)return;
+                    $("#times").text(cnt_step++);
+                    if(!op.noColor)ALL.removeClass("act");
+                    else ALL.attr("class", "");
+                    if(!op.noColor && !op.noHoldExt)ALL.removeClass("loop").removeClass("curloop");
+                    var r = {x: 0, y: 0} , cur;    r.x = randnum(-1, op.size.x);    r.y = randnum(-1, op.size.y);
+                    cur = getNode(r.x, r.y);
+                    //container.find("div").css("background-color", "#ccc");
+                    setM(r.x, r.y, getM(r.x, r.y)+1);
+                    cur.addClass("act");
+                    
+                    if( getM(r.x, r.y) >= op.threshold )
+                    {
+                        isLock = true;
+                        cnt_loop = 0;
+                        isLoop = false;
+                        t_loop = setInterval(loop, op.speed); 
+                    }
+                    else{isLock = false; }
+                    isStep = false;
+                    if(cnt_loop>1)console.log("step: "+cnt_step+";circle: "+cnt_loop+";");
+                }, op.stepspeed);
+            }, 
+            nextStep: function () {
+                this.pause();
+                
+                isLock = true;
+                void function () {
+                    isLoop = false;
+                    //c = 0;
+                    loop();
+                }();
+                
+                void function () {
+                    if(isLock)return;
+                    $("#times").text(cnt_step++);
+                    if(!op.noColor)ALL.removeClass("act");
+                    else ALL.attr("class", "");
+                    if(!op.noColor && !op.noHoldExt)ALL.removeClass("loop").removeClass("curloop");
+                    var r = {x: 0, y: 0} , cur;    r.x = randnum(-1, op.size.x);    r.y = randnum(-1, op.size.y);
+                    cur = getNode(r.x, r.y);
+                    //container.find("div").css("background-color", "#ccc");
+                    setM(r.x, r.y, getM(r.x, r.y)+1);
+                    cur.addClass("act");
+                    isLock = false;
+                }();
+            }, 
+            pause: function () {
+                run_state = false;
+                isLock = false;
+                isLoop = false;
+                isStep = false;
+                clearInterval(t_step);
+                clearInterval(t_loop);
+            }, 
+            setV: function (val) {
+                var ts;
+                if(run_state) {ts = true;run_state = false; }
+
+                for(var i = 0;i<op.size.x;i++)
+                for(var j = 0;j<op.size.y;j++)
+                setM(i, j, val);
+                
+                if(ts)run_state = true;
+            }, 
+            setRandom: function () {
+                var ts;
+                if(run_state) {ts = true;run_state = false; }
+                
+                for(var i = 0;i<op.size.x;i++)
+                for(var j = 0;j<op.size.y;j++)
+                setM(i, j, randnum(-1, 5));
+                
+                if(ts)run_state = true;
+            }, 
+            run_state: function () {return run_state; }
+        };
+    }});
+})(window, jQuery);
+
+
+
+(function (window, $, undefined) {
+    $(document).ready(function () {
+        var t = $.CA();
+        t.init({speed: 10, stepspeed: 10, size: {x: 20, y: 20}, isClose: true, noHoldExt: false, noColor: false});
+        $("#run-check").on("click", function () {
+            if(t.run_state() === false)
+                t.start(), $(this).val("Stop");
+            else
+                t.pause(), $(this).val("Start");
+        });
+        $("#run-next").on("click", function () {
+            t.nextStep(), $("#run-check").val("Start");
+        });
+        $("#set-val-4").on("click", function () {t.setV(4); });
+        $("#set-val-3").on("click", function () {t.setV(3); });
+        $("#set-val-2").on("click", function () {t.setV(2); });
+        $("#set-val-1").on("click", function () {t.setV(1); });
+        $("#set-val-rnd").on("click", function () {t.setRandom(); });
+    });
+})(window, jQuery);
