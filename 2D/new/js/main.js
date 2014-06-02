@@ -247,7 +247,7 @@
 (function (window, $, undefined) {
     $(document).ready(function () {
         var t = $.CA();
-        t.init({speed: 10, stepspeed: 10, size: {x: 40, y: 40}, isClose: true, noHoldExt: true, noColor: false});
+        t.init({speed: 10, stepspeed: 10, size: {x: 40, y: 40}, isClose: true, noHoldExt: false, noColor: false});
         $("#run-check").on("click", function () {
             if(t.run_state() === false)
                 t.start(), $(this).val("Stop");
