@@ -155,7 +155,7 @@
                 t_step = setInterval(function () {
                     if(isLock)return;
                     $("#times").text(cnt_step++);
-                    if(!op.noColor)ALL.removeClass("act");
+                    if(!op.noColor)ALL.removeClass("act").removeClass("loop").removeClass("curloop");
                     else ALL.attr("class", "");
                     if(!op.noColor && !op.noHoldExt)ALL.removeClass("loop").removeClass("curloop");
                     var r = {x: 0, y: 0} , cur;    r.x = randnum(-1, op.size.x);    r.y = randnum(-1, op.size.y);
