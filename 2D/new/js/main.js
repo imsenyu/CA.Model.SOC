@@ -2,7 +2,7 @@
     'use strict';
     String.prototype.format = function () {var args = arguments; return this.replace(/\{(\d+)\}/g, function (m, i) {return args[i]; }); };
     $.extend({CA: function (o) {
-        var op = {
+        var option = $.extend({}, {
                 speed: 500,
                 stepspeed: 500,
                 target: ".ca_container",
@@ -12,169 +12,167 @@
                 isClose: true,
                 noHoldExt: false,
                 noColor: false
-            },
-            container,
-            ALL,
-            mat = [],
-            next = [],
-            t_step,
-            t_loop,
-            cnt_step = 0,
-            cnt_loop = 0,
+            }, o),
+            nodesContainer,
+            allNodes,
+            matArray = [],
+            nextArray = [],
+            timerStep,
+            timerLoop,
+            countStep = 0,
+            countLoop = 0,
             isLock = false,
             isStep = false,
             isLoop = false,
-            run_state = false;
-        op = $.extend({}, op, o);
-        function deepcopy(obj) {
-            var out = [], i, len = obj.length;
-            for (i = 0; i < len; i += 1) {
-                if (obj[i] instanceof Array) {
-                    out[i] = deepcopy(obj[i]);
-                } else {
-                    out[i] = obj[i];
-                }
-            }
-            return out;
-        }
-        function randnum(x, y) {
-            return parseInt(Math.random() * (x - y + 1) + y, 10);
-        }
-        function getTemp(temp) {
-            var ret = {}, thtml, t;
-            for (t in temp) {
-                thtml = $(temp[t]).html();
-                ret[t] = thtml.substring(6, thtml.length - 3);
-            }
-            return ret;
-        }
-        function getM(x, y) {
-            return mat[x][y];
-        }
-        function getNode(x, y) {
-            return ALL.eq(y * op.size.x + x);
-        }
-        function setM(x, y, val, b) {
-            mat[x][y] = val;
-            var obj = ALL.eq(y * op.size.x + x);
-            obj.find("span").text(val);
-            if(!op.noColor && !b)transition(obj, undefined, val);
-        }
-        function transition(obj, obj2, val) {
-            if(obj2 === undefined) {
-                if(obj.hasClass("act"))
-                    obj.attr("class", "act c"+val);
-                else obj.attr("class", "c"+val);
-            }else{
-                var o = getNode(obj, obj2);
-                if(o.hasClass("act"))
-                    o.attr("class", "act c"+val);
-                else o.attr("class", "c"+val);
-            }
-        }
-        function loop() {
-            if(isLoop)return;
-            isLoop = true;
-            var  ret = 0;
-            $("#circle").text(++cnt_loop);
-            next = deepcopy(mat);
-            if(!op.noColor && op.noHoldExt)ALL.removeClass("loop");
-            if(!op.noColor)ALL.removeClass("curloop");
-            else ALL.attr("class", "");
-            for(var i = 0;i<op.size.x;i++) {
-                for(var j = 0;j<op.size.y;j++) {
-                    if(getM(i, j)<op.threshold)continue;
-                    if(i>0)
-                        next[i-1][j] += 1 , next[i][j] -= 1;
-					else if( !op.isClose ) next[i][j] -= 1;
-                    if(j>0)
-                        next[i][j-1] += 1 , next[i][j] -= 1;
-					else if( !op.isClose ) next[i][j] -= 1;
-                    if(i<op.size.x-1)
-                        next[i+1][j] += 1 , next[i][j] -= 1;
-					else if( !op.isClose ) next[i][j] -= 1;
-                    if(j<op.size.y-1)
-                        next[i][j+1] += 1 , next[i][j] -= 1;
-					else if( !op.isClose ) next[i][j] -= 1;
-                }
-            }
+            runState = false,
+			_deepCopy = function (obj) {
+				var out = [], i, len = obj.length;
+				for (i = 0; i < len; i += 1) {
+					if (obj[i] instanceof Array) {
+						out[i] = _deepCopy(obj[i]);
+					} else {
+						out[i] = obj[i];
+					}
+				}
+				return out;
+			},
+			_randomNum = function (x, y) {
+				return parseInt(Math.random() * (x - y + 1) + y, 10);
+			},
+			_getTemplate = function (temp) {
+				var ret = {}, thtml, t;
+				for (t in temp) {
+					thtml = $(temp[t]).html();
+					ret[t] = thtml.substring(6, thtml.length - 3);
+				}
+				return ret;
+			},
+			_getMat = function (x, y) {
+				return matArray[x][y];
+			},
+			_getNode = function (x, y) {
+				return allNodes.eq(y * option.size.x + x);
+			},
+			_setMat = function (x, y, val, b) {
+				matArray[x][y] = val;
+				var obj = allNodes.eq(y * option.size.x + x);
+				obj.find("span").text(val);
+				if(!option.noColor && !b)_cssTransition(obj, undefined, val);
+			},
+			_cssTransition = function (obj, obj2, val) {
+				if(obj2 === undefined) {
+					if(obj.hasClass("act"))
+						obj.attr("class", "act c"+val);
+					else obj.attr("class", "c"+val);
+				}else{
+					var o = _getNode(obj, obj2);
+					if(o.hasClass("act"))
+						o.attr("class", "act c"+val);
+					else o.attr("class", "c"+val);
+				}
+			},
+			_loop = function () {
+				if(isLoop)return;
+				isLoop = true;
+				var  ret = 0;
+				$("#circle").text(++countLoop);
+				nextArray = _deepCopy(matArray);
+				if(!option.noColor && option.noHoldExt)allNodes.removeClass("loop");
+				if(!option.noColor)allNodes.removeClass("curloop");
+				else allNodes.attr("class", "");
+				for(var i = 0;i<option.size.x;i++) {
+					for(var j = 0;j<option.size.y;j++) {
+						if(_getMat(i, j)<option.threshold)continue;
+						if(i>0)
+							nextArray[i-1][j] += 1 , nextArray[i][j] -= 1;
+						else if( !option.isClose ) nextArray[i][j] -= 1;
+						if(j>0)
+							nextArray[i][j-1] += 1 , nextArray[i][j] -= 1;
+						else if( !option.isClose ) nextArray[i][j] -= 1;
+						if(i<option.size.x-1)
+							nextArray[i+1][j] += 1 , nextArray[i][j] -= 1;
+						else if( !option.isClose ) nextArray[i][j] -= 1;
+						if(j<option.size.y-1)
+							nextArray[i][j+1] += 1 , nextArray[i][j] -= 1;
+						else if( !option.isClose ) nextArray[i][j] -= 1;
+					}
+				}
 
-            for(var i = 0;i<op.size.x;i++) {
-                for(var j = 0;j<op.size.y;j++) {
-                    if( next[i][j] != getM(i, j) ) {
-                        setM(i, j, next[i][j]);
-                        if(!op.noColor)getNode(i, j).addClass("loop").addClass("curloop");
-                        else getNode(i, j).attr("class", "loop");
-                    }
-                    ret += (getM(i, j)>= op.threshold);
-                }
-            }    
+				for(var i = 0;i<option.size.x;i++) {
+					for(var j = 0;j<option.size.y;j++) {
+						if( nextArray[i][j] != _getMat(i, j) ) {
+							_setMat(i, j, nextArray[i][j]);
+							if(!option.noColor)_getNode(i, j).addClass("loop").addClass("curloop");
+							else _getNode(i, j).attr("class", "loop");
+						}
+						ret += (_getMat(i, j)>= option.threshold);
+					}
+				}    
 
-            if(ret === 0) {
-                isLock = false;
-                clearInterval(t_loop);
-            }
-            isLoop = false;
-        }
+				if(ret === 0) {
+					isLock = false;
+					clearInterval(timerLoop);
+				}
+				isLoop = false;
+			};
         return {
             init: function (o) {
-                op = $.extend({}, op, o);
-                container = $(op.target);
-                mat = [];
-                for(var i = 0;i<op.size.x;i++) {
-                    mat.push(new Array(op.size.y));
-                    for(var j = 0;j<op.size.y;j++)
-                        mat[i][j] = 0;
+                option = $.extend({}, option, o);
+                nodesContainer = $(option.target);
+                matArray = [];
+                for(var i = 0;i<option.size.x;i++) {
+                    matArray.push(new Array(option.size.y));
+                    for(var j = 0;j<option.size.y;j++)
+                        matArray[i][j] = 0;
                 }    
                 this.build();
             }, 
             build: function () {
-                var html = '', temp = getTemp(op.template), thtml = '';
-                for(var j = 0;j<op.size.y;j++) {
+                var html = '', temp = _getTemplate(option.template), thtml = '';
+                for(var j = 0;j<option.size.y;j++) {
                     thtml = '';
-                    for(var i = 0;i<op.size.x;i++)
+                    for(var i = 0;i<option.size.x;i++)
                         thtml += temp.item.format(i, j, 0);
                     html += temp.line.format(j, thtml);
                 }
-                container.append(html);
-                ALL = container.find("li div");
+                nodesContainer.append(html);
+                allNodes = nodesContainer.find("li div");
             }, 
             start: function () {
-                if(run_state) {return; }
+                if(runState) {return; }
                 if(isStep) {return; }
-                run_state = true;
+                runState = true;
                 isStep = true;
                 
                 void function () {
                     isLock = true;
                     isLoop = false;
-                    cnt_loop = 0;
-                    t_loop = setInterval(loop, op.speed);
+                    countLoop = 0;
+                    timerLoop = setInterval(_loop, option.speed);
                 }();
                 
-                t_step = setInterval(function () {
+                timerStep = setInterval(function () {
                     if(isLock)return;
-                    $("#times").text(cnt_step++);
-                    if(!op.noColor)ALL.removeClass("act").removeClass("loop").removeClass("curloop");
-                    else ALL.attr("class", "");
-                    if(!op.noColor && !op.noHoldExt)ALL.removeClass("loop").removeClass("curloop");
-                    var r = {x: 0, y: 0} , cur;    r.x = randnum(-1, op.size.x);    r.y = randnum(-1, op.size.y);
-                    cur = getNode(r.x, r.y);
-                    //container.find("div").css("background-color", "#ccc");
-                    setM(r.x, r.y, getM(r.x, r.y)+1);
+                    $("#times").text(countStep++);
+                    if(!option.noColor)allNodes.removeClass("act").removeClass("loop").removeClass("curloop");
+                    else allNodes.attr("class", "");
+                    if(!option.noColor && !option.noHoldExt)allNodes.removeClass("loop").removeClass("curloop");
+                    var r = {x: 0, y: 0} , cur;    r.x = _randomNum(-1, option.size.x);    r.y = _randomNum(-1, option.size.y);
+                    cur = _getNode(r.x, r.y);
+                    _setMat(r.x, r.y, _getMat(r.x, r.y)+1);
                     cur.addClass("act");
                     
-                    if( getM(r.x, r.y) >= op.threshold )
+                    if( _getMat(r.x, r.y) >= option.threshold )
                     {
                         isLock = true;
-                        cnt_loop = 0;
+                        countLoop = 0;
                         isLoop = false;
-                        t_loop = setInterval(loop, op.speed); 
+                        timerLoop = setInterval(_loop, option.speed); 
                     }
                     else{isLock = false; }
                     isStep = false;
-                    if(cnt_loop>1)console.log("step: "+cnt_step+";circle: "+cnt_loop+";");
-                }, op.stepspeed);
+                    if(countLoop>1)console.log("step: "+countStep+";circle: "+countLoop+";");
+                }, option.stepspeed);
             }, 
             nextStep: function () {
                 this.pause();
@@ -182,55 +180,53 @@
                 isLock = true;
                 void function () {
                     isLoop = false;
-                    //c = 0;
-                    loop();
+                    _loop();
                 }();
                 
                 void function () {
                     if(isLock)return;
-                    $("#times").text(cnt_step++);
-                    if(!op.noColor)ALL.removeClass("act");
-                    else ALL.attr("class", "");
-                    if(!op.noColor && !op.noHoldExt)ALL.removeClass("loop").removeClass("curloop");
-                    var r = {x: 0, y: 0} , cur;    r.x = randnum(-1, op.size.x);    r.y = randnum(-1, op.size.y);
-                    cur = getNode(r.x, r.y);
-                    //container.find("div").css("background-color", "#ccc");
-                    setM(r.x, r.y, getM(r.x, r.y)+1);
+                    $("#times").text(countStep++);
+                    if(!option.noColor)allNodes.removeClass("act");
+                    else allNodes.attr("class", "");
+                    if(!option.noColor && !option.noHoldExt)allNodes.removeClass("loop").removeClass("curloop");
+                    var r = {x: 0, y: 0} , cur;    r.x = _randomNum(-1, option.size.x);    r.y = _randomNum(-1, option.size.y);
+                    cur = _getNode(r.x, r.y);
+                    _setMat(r.x, r.y, _getMat(r.x, r.y)+1);
                     cur.addClass("act");
                     isLock = false;
                 }();
             }, 
             pause: function () {
-                run_state = false;
+                runState = false;
                 isLock = false;
                 isLoop = false;
                 isStep = false;
-                clearInterval(t_step);
-                clearInterval(t_loop);
+                clearInterval(timerStep);
+                clearInterval(timerLoop);
             }, 
             setV: function (val) {
                 var ts;
-                if(run_state) {ts = true;run_state = false; }
+                if(runState) {ts = true;runState = false; }
 
-                for(var i = 0;i<op.size.x;i++)
-                for(var j = 0;j<op.size.y;j++)
-                setM(i, j, val);
+                for(var i = 0;i<option.size.x;i++)
+                for(var j = 0;j<option.size.y;j++)
+                _setMat(i, j, val);
                 
-                if(ts)run_state = true;
+                if(ts)runState = true;
             }, 
             setRandom: function () {
                 var ts;
-                if(run_state) {ts = true;run_state = false; }
+                if(runState) {ts = true;runState = false; }
                 
-                for(var i = 0;i<op.size.x;i++)
-                for(var j = 0;j<op.size.y;j++)
-                setM(i, j, randnum(-1, 5));
+                for(var i = 0;i<option.size.x;i++)
+                for(var j = 0;j<option.size.y;j++)
+                _setMat(i, j, _randomNum(-1, 5));
                 
-                if(ts)run_state = true;
+                if(ts)runState = true;
             }, 
-            run_state: function () {return run_state; },
-			setOption: function (opt,val) {	op[opt] = val ? true : false; },
-			getOption: function (opt) {	return op[opt]; }
+            runState: function () {return runState; },
+			setOption: function (opt,val) {	option[opt] = val ? true : false; },
+			getOption: function (opt) {	return option[opt]; }
         };
     }});
 })(window, jQuery);
@@ -242,12 +238,12 @@
         var t = $.CA();
         t.init({speed: 10, stepspeed: 10, size: {x: 40, y: 40}, isClose: true, noHoldExt: false, noColor: false});
         $("#run-check").on("click", function () {
-            if(t.run_state() === false)
+            if(t.runState() === false)
                 t.start(), $(this).val("Stop");
             else
                 t.pause(), $(this).val("Start");
         });
-        $("#run-next").on("click", function () {
+        $("#run-nextArray").on("click", function () {
             t.nextStep(), $("#run-check").val("Start");
         });
 		$(".ca_tools .check").each(function () {
