@@ -243,7 +243,7 @@
             else
                 t.pause(), $(this).val("Start");
         });
-        $("#run-nextArray").on("click", function () {
+        $("#run-next").on("click", function () {
             t.nextStep(), $("#run-check").val("Start");
         });
         $(".ca_tools .check").each(function () {
