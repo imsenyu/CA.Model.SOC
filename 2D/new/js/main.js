@@ -25,96 +25,96 @@
             isStep = false,
             isLoop = false,
             runState = false,
-			_deepCopy = function (obj) {
-				var out = [], i, len = obj.length;
-				for (i = 0; i < len; i += 1) {
-					if (obj[i] instanceof Array) {
-						out[i] = _deepCopy(obj[i]);
-					} else {
-						out[i] = obj[i];
-					}
-				}
-				return out;
-			},
-			_randomNum = function (x, y) {
-				return parseInt(Math.random() * (x - y + 1) + y, 10);
-			},
-			_getTemplate = function (temp) {
-				var ret = {}, thtml, t;
-				for (t in temp) {
-					thtml = $(temp[t]).html();
-					ret[t] = thtml.substring(6, thtml.length - 3);
-				}
-				return ret;
-			},
-			_getMat = function (x, y) {
-				return matArray[x][y];
-			},
-			_getNode = function (x, y) {
-				return allNodes.eq(y * option.size.x + x);
-			},
-			_setMat = function (x, y, val, b) {
-				matArray[x][y] = val;
-				var obj = allNodes.eq(y * option.size.x + x);
-				obj.find("span").text(val);
-				if(!option.noColor && !b)_cssTransition(obj, undefined, val);
-			},
-			_cssTransition = function (obj, obj2, val) {
-				if(obj2 === undefined) {
-					if(obj.hasClass("act"))
-						obj.attr("class", "act c"+val);
-					else obj.attr("class", "c"+val);
-				}else{
-					var o = _getNode(obj, obj2);
-					if(o.hasClass("act"))
-						o.attr("class", "act c"+val);
-					else o.attr("class", "c"+val);
-				}
-			},
-			_loop = function () {
-				if(isLoop)return;
-				isLoop = true;
-				var  ret = 0;
-				$("#circle").text(++countLoop);
-				nextArray = _deepCopy(matArray);
-				if(!option.noColor && option.noHoldExt)allNodes.removeClass("loop");
-				if(!option.noColor)allNodes.removeClass("curloop");
-				else allNodes.attr("class", "");
-				for(var i = 0;i<option.size.x;i++) {
-					for(var j = 0;j<option.size.y;j++) {
-						if(_getMat(i, j)<option.threshold)continue;
-						if(i>0)
-							nextArray[i-1][j] += 1 , nextArray[i][j] -= 1;
-						else if( !option.isClose ) nextArray[i][j] -= 1;
-						if(j>0)
-							nextArray[i][j-1] += 1 , nextArray[i][j] -= 1;
-						else if( !option.isClose ) nextArray[i][j] -= 1;
-						if(i<option.size.x-1)
-							nextArray[i+1][j] += 1 , nextArray[i][j] -= 1;
-						else if( !option.isClose ) nextArray[i][j] -= 1;
-						if(j<option.size.y-1)
-							nextArray[i][j+1] += 1 , nextArray[i][j] -= 1;
-						else if( !option.isClose ) nextArray[i][j] -= 1;
-					}
-				}
+            _deepCopy = function (obj) {
+                var out = [], i, len = obj.length;
+                for (i = 0; i < len; i += 1) {
+                    if (obj[i] instanceof Array) {
+                        out[i] = _deepCopy(obj[i]);
+                    } else {
+                        out[i] = obj[i];
+                    }
+                }
+                return out;
+            },
+            _randomNum = function (x, y) {
+                return parseInt(Math.random() * (x - y + 1) + y, 10);
+            },
+            _getTemplate = function (temp) {
+                var ret = {}, thtml, t;
+                for (t in temp) {
+                    thtml = $(temp[t]).html();
+                    ret[t] = thtml.substring(6, thtml.length - 3);
+                }
+                return ret;
+            },
+            _getMat = function (x, y) {
+                return matArray[x][y];
+            },
+            _getNode = function (x, y) {
+                return allNodes.eq(y * option.size.x + x);
+            },
+            _setMat = function (x, y, val, b) {
+                matArray[x][y] = val;
+                var obj = allNodes.eq(y * option.size.x + x);
+                obj.find("span").text(val);
+                if(!option.noColor && !b)_cssTransition(obj, undefined, val);
+            },
+            _cssTransition = function (obj, obj2, val) {
+                if(obj2 === undefined) {
+                    if(obj.hasClass("act"))
+                        obj.attr("class", "act c"+val);
+                    else obj.attr("class", "c"+val);
+                }else{
+                    var o = _getNode(obj, obj2);
+                    if(o.hasClass("act"))
+                        o.attr("class", "act c"+val);
+                    else o.attr("class", "c"+val);
+                }
+            },
+            _loop = function () {
+                if(isLoop)return;
+                isLoop = true;
+                var  ret = 0;
+                $("#circle").text(++countLoop);
+                nextArray = _deepCopy(matArray);
+                if(!option.noColor && option.noHoldExt)allNodes.removeClass("loop");
+                if(!option.noColor)allNodes.removeClass("curloop");
+                else allNodes.attr("class", "");
+                for(var i = 0;i<option.size.x;i++) {
+                    for(var j = 0;j<option.size.y;j++) {
+                        if(_getMat(i, j)<option.threshold)continue;
+                        if(i>0)
+                            nextArray[i-1][j] += 1 , nextArray[i][j] -= 1;
+                        else if( !option.isClose ) nextArray[i][j] -= 1;
+                        if(j>0)
+                            nextArray[i][j-1] += 1 , nextArray[i][j] -= 1;
+                        else if( !option.isClose ) nextArray[i][j] -= 1;
+                        if(i<option.size.x-1)
+                            nextArray[i+1][j] += 1 , nextArray[i][j] -= 1;
+                        else if( !option.isClose ) nextArray[i][j] -= 1;
+                        if(j<option.size.y-1)
+                            nextArray[i][j+1] += 1 , nextArray[i][j] -= 1;
+                        else if( !option.isClose ) nextArray[i][j] -= 1;
+                    }
+                }
 
-				for(var i = 0;i<option.size.x;i++) {
-					for(var j = 0;j<option.size.y;j++) {
-						if( nextArray[i][j] != _getMat(i, j) ) {
-							_setMat(i, j, nextArray[i][j]);
-							if(!option.noColor)_getNode(i, j).addClass("loop").addClass("curloop");
-							else _getNode(i, j).attr("class", "loop");
-						}
-						ret += (_getMat(i, j)>= option.threshold);
-					}
-				}    
+                for(var i = 0;i<option.size.x;i++) {
+                    for(var j = 0;j<option.size.y;j++) {
+                        if( nextArray[i][j] != _getMat(i, j) ) {
+                            _setMat(i, j, nextArray[i][j]);
+                            if(!option.noColor)_getNode(i, j).addClass("loop").addClass("curloop");
+                            else _getNode(i, j).attr("class", "loop");
+                        }
+                        ret += (_getMat(i, j)>= option.threshold);
+                    }
+                }    
 
-				if(ret === 0) {
-					isLock = false;
-					clearInterval(timerLoop);
-				}
-				isLoop = false;
-			};
+                if(ret === 0) {
+                    isLock = false;
+                    clearInterval(timerLoop);
+                }
+                isLoop = false;
+            };
         return {
             init: function (o) {
                 option = $.extend({}, option, o);
@@ -225,8 +225,8 @@
                 if(ts)runState = true;
             }, 
             runState: function () {return runState; },
-			setOption: function (opt,val) {	option[opt] = val ? true : false; },
-			getOption: function (opt) {	return option[opt]; }
+            setOption: function (opt,val) {    option[opt] = val ? true : false; },
+            getOption: function (opt) {    return option[opt]; }
         };
     }});
 })(window, jQuery);
@@ -246,15 +246,15 @@
         $("#run-nextArray").on("click", function () {
             t.nextStep(), $("#run-check").val("Start");
         });
-		$(".ca_tools .check").each(function () {
-			var self = $(this) , val = t.getOption( self.data("fn") );
-			val === true ? self.attr("checked","checked") : self.removeAttr("checked");
-			
-		});
-		$(".ca_tools .check").on("click",function () {
-			var self = $(this);
-			t.setOption( self.data("fn") , self.attr("checked") );
-		});
+        $(".ca_tools .check").each(function () {
+            var self = $(this) , val = t.getOption( self.data("fn") );
+            val === true ? self.attr("checked","checked") : self.removeAttr("checked");
+            
+        });
+        $(".ca_tools .check").on("click",function () {
+            var self = $(this);
+            t.setOption( self.data("fn") , self.attr("checked") );
+        });
         $("#set-val-4").on("click", function () {t.setV(4); });
         $("#set-val-3").on("click", function () {t.setV(3); });
         $("#set-val-2").on("click", function () {t.setV(2); });
